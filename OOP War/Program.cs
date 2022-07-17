@@ -19,7 +19,7 @@ namespace OOP_War
             orcsArmy.ShowStats();
             humanArmy.ShowStats();
             BattleField arena = new BattleField(orcsArmy, humanArmy);
-            arena.Battle();
+            arena.StartBattle();
         }
     }
 
@@ -102,28 +102,22 @@ namespace OOP_War
         {
             _soldiers.RemoveAt(soldierNumber);
         }
-
-
     }
 
     class BattleField
     {
         private Squad _leftArmy;
         private Squad _rightArmy;
-
         public BattleField(Squad leftArmy, Squad rightArmy)
         {
             _leftArmy = leftArmy;
             _rightArmy = rightArmy;
         }
 
-        public void Battle()
+        public void StartBattle()
         {
-
-            int leftSoldiersCounter = 0;
-            int rightSoldiersCounter = 0;
-            Soldier leftSoldier = _leftArmy.SendToBattle(leftSoldiersCounter);
-            Soldier rightSoldier = _rightArmy.SendToBattle(rightSoldiersCounter);
+            Soldier leftSoldier = _leftArmy.SendToBattle((_leftArmy.GetSoldiersNumber() - 1));
+            Soldier rightSoldier = _rightArmy.SendToBattle((_rightArmy.GetSoldiersNumber() - 1));
 
             while (_leftArmy.GetSoldiersNumber() > 0 && _rightArmy.GetSoldiersNumber() > 0)
             {
@@ -131,42 +125,42 @@ namespace OOP_War
 
                 if (leftSoldier.Health <= 0)
                 {
-                    _leftArmy.SendToHospital(leftSoldiersCounter);
+                    _leftArmy.SendToHospital((_leftArmy.GetSoldiersNumber() - 1));
                     Console.WriteLine("Солдата левого взвода убили!");
-                    leftSoldiersCounter++;
-                    if (leftSoldiersCounter < _leftArmy.GetSoldiersNumber())
+                    if (_leftArmy.GetSoldiersNumber() > 0)
                     {
-                        leftSoldier = _leftArmy.SendToBattle(leftSoldiersCounter);
+                        leftSoldier = _leftArmy.SendToBattle((_leftArmy.GetSoldiersNumber() - 1));
                     }
                     else
                     {
                         Console.WriteLine("Солдаты кончились в левом взводе!");
                     }
                 }
-
-                rightSoldier.TakeDamage(leftSoldier.Damage);
-
-                if (rightSoldier.Health <= 0)
+                if (_leftArmy.GetSoldiersNumber() > 0)
                 {
-                    _rightArmy.SendToHospital(rightSoldiersCounter);
-                    Console.WriteLine("Солдата правого взвода убили!");
-                    rightSoldiersCounter++;
-                    if (rightSoldiersCounter < _rightArmy.GetSoldiersNumber())
+                    rightSoldier.TakeDamage(leftSoldier.Damage);
+
+                    if (rightSoldier.Health <= 0)
                     {
-                        rightSoldier = _rightArmy.SendToBattle(rightSoldiersCounter);
+                        _rightArmy.SendToHospital((_rightArmy.GetSoldiersNumber() - 1));
+                        Console.WriteLine("Солдата правого взвода убили!");
+                        if (_rightArmy.GetSoldiersNumber() > 0)
+                        {
+                            rightSoldier = _rightArmy.SendToBattle((_rightArmy.GetSoldiersNumber() - 1));
+                        }
+                        else
+                        {
+                            Console.WriteLine("Солдаты кончились в левом взводе!");
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine("Солдаты кончились в левом взводе!");
-                    }
-                }
+                }               
             }
             AnnounceWinner(_leftArmy, _rightArmy);
         }
 
         public void AnnounceWinner(Squad left, Squad right)
         {
-            if (left.GetSoldiersNumber() <= 0)
+            if (left.GetSoldiersNumber() == 0)
             {
                 Console.WriteLine("Выиграли правые!");
             }
