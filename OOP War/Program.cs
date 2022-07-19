@@ -31,17 +31,15 @@ namespace OOP_War
             Damage = damage;
         }
 
-        public Soldier Fill()
+        public void Fill()
         {
-            Soldier recruit = new Soldier(0, 0);
             Random random = new Random();
             int soldierMinHP = 3;
             int soldierMaxHP = 8;
             int soldierMinDamage = 1;
             int soldierMaxDamage = 4;
-            recruit.Health = random.Next(soldierMinHP, soldierMaxHP);
-            recruit.Damage = random.Next(soldierMinDamage, soldierMaxDamage);
-            return recruit;
+            Health = random.Next(soldierMinHP, soldierMaxHP);
+            Damage = random.Next(soldierMinDamage, soldierMaxDamage);
         }
 
         public void ShowInfo()
@@ -70,7 +68,8 @@ namespace OOP_War
         {
             for (int i = 0; i < squadCount; i++)
             {
-                _soldiers.Add(_recruit.Fill());
+                _recruit.Fill();
+                _soldiers.Add(_recruit);
             }
         }
 

@@ -17,11 +17,47 @@ namespace Aquarium
 
     class Fish
     {
-        public int Age { get; private set; }
+        public int CurrentAge { get; private set; }
+        public int MaximunAge { get; private set; }
+        public bool IsAlive { get; private set; }
 
-        public Fish(int age)
+        public Fish(int age, int maximunAge)
         {
-            Age = age;
+            CurrentAge = age;
+            MaximunAge = maximunAge;
+            IsAlive = true;
         }
+    }
+
+    class Aquarium
+    {
+        private List<Fish> _fish;
+        private int _capacity;
+
+        public Aquarium(List<Fish> fish, int capacity)
+        {
+            _fish = fish;
+            _capacity = capacity;
+        }
+
+        public void AddFish(Fish fish)
+        {
+            if(_fish.Count < _capacity)
+            {
+                _fish.Add(fish);
+            }
+            else
+            {
+                Console.WriteLine("Превышено количество рыб в аквариуеме");
+            }            
+        }
+
+        public void DeleteFish()
+        {
+            _fish.RemoveAt(_fish.Count - 1);
+            Console.WriteLine("Удалили рыбу");
+        }
+
+
     }
 }
