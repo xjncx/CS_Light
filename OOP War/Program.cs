@@ -29,6 +29,7 @@ namespace OOP_War
         private int _soldierMaxHP = 8;
         private int _soldierMinDamage = 1;
         private int _soldierMaxDamage = 4;
+
         public Soldier(int health = 0, int damage = 0)
         {
             Health = health;
