@@ -55,6 +55,7 @@ namespace OOP_War
     {
         private List<Soldier> _soldiers;
         public string Name { get; private set; }
+
         public Squad(string name, int size)
         {
             _soldiers = new List<Soldier>(size);
@@ -102,6 +103,7 @@ namespace OOP_War
     {
         private Squad _leftArmy;
         private Squad _rightArmy;
+
         public BattleField(Squad leftArmy, Squad rightArmy)
         {
             _leftArmy = leftArmy;
