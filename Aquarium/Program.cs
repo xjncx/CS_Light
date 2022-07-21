@@ -15,11 +15,9 @@ namespace Aquarium
 
     class Fish
     {
-
         public int CurrentAge { get; private set; }
         public int MaximunAge { get; private set; }
         public bool IsAlive => CurrentAge < MaximunAge;
-
 
         public Fish(int age = 1, int maximunAge = 1)
         {
