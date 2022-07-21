@@ -7,12 +7,8 @@ namespace OOP_War
     {
         static void Main()
         {
-            List<Soldier> orcsSoldiers = new List<Soldier>();
-            List<Soldier> humanSoldiers = new List<Soldier>();
-            Squad orcsArmy = new Squad(orcsSoldiers, "Орки");
-            Squad humanArmy = new Squad(humanSoldiers, "Люди");
-            orcsArmy.Assemble(5);
-            humanArmy.Assemble(5);
+            Squad orcsArmy = new Squad("Орки", 5);
+            Squad humanArmy = new Squad("Люди", 5);
             orcsArmy.ShowStats();
             humanArmy.ShowStats();
             BattleField arena = new BattleField(orcsArmy, humanArmy);
@@ -22,13 +18,13 @@ namespace OOP_War
 
     class Soldier
     {
-        public int Health { get; private set; }
-        public int Damage { get; private set; }
         private Random _random = new Random();
-        private int _soldierMinHP = 3;
-        private int _soldierMaxHP = 8;
+        private int _soldierMinHealth = 3;
+        private int _soldierMaxHealth = 8;
         private int _soldierMinDamage = 1;
         private int _soldierMaxDamage = 4;
+        public int Health { get; private set; }
+        public int Damage { get; private set; }
 
         public Soldier(int health = 0, int damage = 0)
         {
@@ -39,7 +35,7 @@ namespace OOP_War
         public Soldier Fill()
         {
             Soldier recruit = new Soldier();
-            recruit.Health = _random.Next(_soldierMinHP, _soldierMaxHP);
+            recruit.Health = _random.Next(_soldierMinHealth, _soldierMaxHealth);
             recruit.Damage = _random.Next(_soldierMinDamage, _soldierMaxDamage);
             return recruit;
         }
@@ -59,17 +55,18 @@ namespace OOP_War
     {
         private List<Soldier> _soldiers;
         public string Name { get; private set; }
-        public Squad(List<Soldier> soldiers, string name)
+        public Squad(string name, int size)
         {
-            _soldiers = soldiers;
+            _soldiers = new List<Soldier>(size);
             Name = name;
+            Assemble();
         }
 
-        public void Assemble(int squadCount)
+        public void Assemble()
         {
             Soldier recruit = new Soldier();
 
-            for (int i = 0; i < squadCount; i++)
+            for (int i = 0; i < _soldiers.Count; i++)
             {
                 _soldiers.Add(recruit.Fill());
             }
@@ -92,9 +89,7 @@ namespace OOP_War
 
         public Soldier SendToBattle(int number)
         {
-            Soldier soldier;
-            soldier = _soldiers[number];
-            return soldier;
+           return _soldiers[number];   
         }
 
         public void SendToHospital(int soldierNumber)
@@ -122,13 +117,13 @@ namespace OOP_War
             {
                 Console.WriteLine($"Атакуют {_rightArmy.Name}");
                 leftSoldier.TakeDamage(rightSoldier.Damage);
-                CheckHealth(ref leftSoldier);
+                ShowSoloAttackResult(ref leftSoldier, _leftArmy);
 
                 if (_leftArmy.GetSoldiersNumber() > 0)
                 {
                     Console.WriteLine($"Атакуют {_leftArmy.Name}");
                     rightSoldier.TakeDamage(leftSoldier.Damage);
-                    CheckHealth(ref rightSoldier);
+                    ShowSoloAttackResult(ref rightSoldier, _rightArmy);
                 }
             }
             AnnounceWinner(_leftArmy, _rightArmy);
@@ -146,19 +141,19 @@ namespace OOP_War
             }
         }
 
-        public void CheckHealth(ref Soldier soldier)
+        public void ShowSoloAttackResult(ref Soldier soldier, Squad squad)
         {
             if (soldier.Health <= 0)
             {
-                _leftArmy.SendToHospital((_leftArmy.GetSoldiersNumber() - 1));
-                Console.WriteLine($"Солдата убили!");
-                if (_leftArmy.GetSoldiersNumber() > 0)
+                squad.SendToHospital((squad.GetSoldiersNumber() - 1)); 
+                Console.WriteLine($"Солдата {squad.Name} убили!");
+                if (squad.GetSoldiersNumber() > 0)
                 {
-                    soldier = _leftArmy.SendToBattle((_leftArmy.GetSoldiersNumber() - 1));
+                    soldier = squad.SendToBattle((squad.GetSoldiersNumber() - 1));
                 }
                 else
                 {
-                    Console.WriteLine("Солдаты кончились взводе!");
+                    Console.WriteLine($"Солдаты кончились в взводе {squad.Name}!");
                 }
             }
         }
