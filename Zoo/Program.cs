@@ -57,7 +57,7 @@ namespace Zoo
         {
             for (int i = 0; i < _cages.Count; i++)
             {
-                if(i == cageNumber)
+                if (i == cageNumber)
                 {
                     _cages[i].ShowCategoryInfo();
                 }
