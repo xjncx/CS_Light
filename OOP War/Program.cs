@@ -18,11 +18,6 @@ namespace OOP_War
 
     class Soldier
     {
-        private Random _random = new Random();
-        private int _soldierMinHealth = 3;
-        private int _soldierMaxHealth = 8;
-        private int _soldierMinDamage = 1;
-        private int _soldierMaxDamage = 4;
         public int Health { get; private set; }
         public int Damage { get; private set; }
 
@@ -30,14 +25,18 @@ namespace OOP_War
         {
             Health = health;
             Damage = damage;
+            Fill();
         }
 
-        public Soldier Fill()
+        public void Fill()
         {
-            Soldier recruit = new Soldier();
-            recruit.Health = _random.Next(_soldierMinHealth, _soldierMaxHealth);
-            recruit.Damage = _random.Next(_soldierMinDamage, _soldierMaxDamage);
-            return recruit;
+            Random _random = new Random();
+            int _soldierMinHealth = 3;
+            int _soldierMaxHealth = 8;
+            int _soldierMinDamage = 1;
+            int _soldierMaxDamage = 4;
+            Health = _random.Next(_soldierMinHealth, _soldierMaxHealth);
+            Damage = _random.Next(_soldierMinDamage, _soldierMaxDamage);
         }
 
         public void ShowInfo()
@@ -54,22 +53,22 @@ namespace OOP_War
     class Squad
     {
         private List<Soldier> _soldiers;
+        private int _size;
         public string Name { get; private set; }
 
         public Squad(string name, int size)
         {
-            _soldiers = new List<Soldier>(size);
+            _soldiers = new List<Soldier>();
+            _size = size;
             Name = name;
-            Assemble();
+            Recruit();
         }
 
-        public void Assemble()
+        public void Recruit()
         {
-            Soldier recruit = new Soldier();
-
-            for (int i = 0; i < _soldiers.Count; i++)
+            for (int i = 0; i < _size; i++)
             {
-                _soldiers.Add(recruit.Fill());
+                _soldiers.Add(new Soldier());
             }
         }
 
@@ -90,7 +89,7 @@ namespace OOP_War
 
         public Soldier SendToBattle(int number)
         {
-           return _soldiers[number];   
+            return _soldiers[number];
         }
 
         public void SendToHospital(int soldierNumber)
@@ -147,7 +146,7 @@ namespace OOP_War
         {
             if (soldier.Health <= 0)
             {
-                squad.SendToHospital((squad.GetSoldiersNumber() - 1)); 
+                squad.SendToHospital((squad.GetSoldiersNumber() - 1));
                 Console.WriteLine($"Солдата {squad.Name} убили!");
                 if (squad.GetSoldiersNumber() > 0)
                 {
