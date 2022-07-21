@@ -7,26 +7,24 @@ namespace Aquarium
     {
         static void Main(string[] args)
         {
-            List<Fish> fish = new List<Fish>() { new Fish(2, 4), new Fish(1, 3), new Fish(4, 6) };
-            Aquarium aquarium = new Aquarium(fish, 4);
+            List<Fish> fishes = new List<Fish>() { new Fish(2, 4), new Fish(1, 3), new Fish(4, 6) };
+            Aquarium aquarium = new Aquarium(fishes, 4);
             aquarium.ShowMenu();
         }
     }
 
     class Fish
     {
+
         public int CurrentAge { get; private set; }
         public int MaximunAge { get; private set; }
-        public bool IsAlive { get; private set; }
-        Random _random = new Random();
-        private int _maxFishAge = 10;
-        private int _minFishAge = 1;
+        public bool IsAlive => CurrentAge < MaximunAge;
+
 
         public Fish(int age = 1, int maximunAge = 1)
         {
             CurrentAge = age;
             MaximunAge = maximunAge;
-            IsAlive = true;
         }
 
         public void ShowStats()
@@ -34,33 +32,23 @@ namespace Aquarium
             Console.WriteLine($"Статус живости рыбки: {IsAlive}. Возраст рыбки: {CurrentAge}");
         }
 
-        public Fish Create()
-        {
-            int age = _random.Next(_minFishAge, _maxFishAge);
-            int maximunAge = _random.Next(_maxFishAge, 15);
-            Fish fish = new Fish(age, maximunAge);
-            return fish;
-        }
-
         public void AddDay()
         {
             CurrentAge++;
-        }
-
-        public void Kill()
-        {
-            IsAlive = false;
         }
     }
 
     class Aquarium
     {
-        private List<Fish> _fish;
+        private List<Fish> _fishes;
         private int _capacity;
+        private Random _random = new Random();
+        private int _maxFishAge = 10;
+        private int _minFishAge = 1;
 
         public Aquarium(List<Fish> fish, int capacity)
         {
-            _fish = fish;
+            _fishes = fish;
             _capacity = capacity;
         }
 
@@ -70,7 +58,6 @@ namespace Aquarium
 
             while (isRunning)
             {
-                CheckFishAge();
                 ShowFishStats();
                 Console.WriteLine("Выберите действие с рыбками:\n1. Добавить рыбку.\n2.Удалить рыбку\n3. Прожить день");
                 int userInput;
@@ -94,11 +81,9 @@ namespace Aquarium
 
         public void AddFish()
         {
-            Fish fish = new Fish();
-
-            if (_fish.Count < _capacity)
+            if (_fishes.Count < _capacity)
             {
-                _fish.Add(fish.Create());
+                _fishes.Add(new Fish(_random.Next(_minFishAge, _maxFishAge), _maxFishAge));
             }
             else
             {
@@ -112,19 +97,18 @@ namespace Aquarium
             int userInput;
             if (Int32.TryParse(Console.ReadLine(), out userInput))
             {
-                _fish.RemoveAt(_fish.Count - 1);
+                _fishes.RemoveAt(_fishes.Count - 1);
                 Console.WriteLine("Удалили рыбу");
             }
             else
             {
                 Console.WriteLine("Такой рыбы нет");
             }
-
         }
 
         public void AddDay()
         {
-            foreach (Fish fish in _fish)
+            foreach (Fish fish in _fishes)
             {
                 fish.AddDay();
             }
@@ -132,18 +116,9 @@ namespace Aquarium
 
         public void ShowFishStats()
         {
-            foreach (Fish fish in _fish)
+            foreach (Fish fish in _fishes)
             {
                 fish.ShowStats();
-            }
-        }
-
-        public void CheckFishAge()
-        {
-            foreach (Fish fish in _fish)
-            {
-                if (fish.CurrentAge >= fish.MaximunAge)
-                    fish.Kill();
             }
         }
     }
