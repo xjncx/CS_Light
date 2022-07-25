@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
+//1.zoo.ShowMenu(); -зоопарка не отвечает только за показ. Здесь полностью Work() 
+//4. "Выберите вольер и узнайте что там за животные. 1 - кошки, 2 - обезъяны, 3 - медведи, 4 - змеи." - а откуда вы знаете что именно такая очередность будет получена в класс? И switch (userInput) { case "1": ShowCageInfo(0); -это большой дубляж кода.У вас есть список, перебрав через цикл у вольера можно узнать имя и его вывести. Дальше запросив индекс, проверить со списком, а есть ли такой элемент.И тогда методу и зоопарку всё равно сколько вольеров, хоть 1000, код будет всё тот же и так же работать.
+
+
 namespace Zoo
 {
     class Program
@@ -13,43 +17,53 @@ namespace Zoo
             List<Animal> snakes = new List<Animal>() { new Animal("Анаконда", "Ссс", "Ж"), new Animal("Королевская кобра", "Шшш", "Ж") };
             List<Cage> cages = new List<Cage>() { new Cage("Кошки", cats), new Cage("Обезъяны", monkeys), new Cage("Медведи", bears), new Cage("Серпентарий", snakes) };
             Zoo zoo = new Zoo(cages);
-            zoo.ShowMenu();
+            zoo.Work();
         }
     }
 
     class Zoo
     {
         private List<Cage> _cages = new List<Cage>();
-        private bool _isZooOpening = true;
 
         public Zoo(List<Cage> cages)
         {
             _cages = cages;
         }
 
-        public void ShowMenu()
+        public void Work()
         {
-            while (_isZooOpening)
+            bool _isOpening = true;
+
+            while (_isOpening)
             {
                 string userInput;
-                Console.WriteLine("Добро пожаловать в Зоопарк. Выберите вольер и узнайте что там за животные. 1 - кошки, 2 - обезъяны, 3 - медведи, 4 - змеи.");
+                Console.WriteLine("Добро пожаловать в Зоопарк. Выберите вольер и узнайте что там за животные.");
+                ShowCagesName();
                 userInput = Console.ReadLine();
 
-                switch (userInput)
+                if (Int32.TryParse(userInput, out int userChoice))
                 {
-                    case "1":
-                        ShowCageInfo(0);
-                        break;
-                    case "2":
-                        ShowCageInfo(1);
-                        break;
-                    case "3":
-                        ShowCageInfo(2);
-                        break;
-                    case "4":
-                        ShowCageInfo(3);
-                        break;
+                    if (userChoice < _cages.Count)
+                    {
+                        ShowCageInfo(userChoice);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Такой клетки нет");
+                    }
                 }
+                else
+                {
+                    Console.WriteLine("Вы ввели не число");
+                }
+            }
+        }
+
+        public void ShowCagesName()
+        {
+            for (int i = 0; i < _cages.Count; i++)
+            {
+                Console.WriteLine(i + 1 + " " + _cages[i].Category);
             }
         }
 
@@ -91,18 +105,18 @@ namespace Zoo
     {
         public string Name { get; private set; }
         public string Sound { get; private set; }
-        public string Male { get; private set; }
+        public string Sex { get; private set; }
 
-        public Animal(string name, string sound, string male)
+        public Animal(string name, string sound, string sex)
         {
             Name = name;
             Sound = sound;
-            Male = male;
+            Sex = sex;
         }
 
         public void ShowInfo()
         {
-            Console.WriteLine($"Животное: {Name}. Пол: {Male}. Издает звук {Sound}");
+            Console.WriteLine($"Животное: {Name}. Пол: {Sex}. Издает звук {Sound}");
         }
     }
 }
