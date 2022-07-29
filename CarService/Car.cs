@@ -8,11 +8,16 @@ namespace CarService
 {
     class Car
     {
-        public string BrokenPart { get; private set; }
+        public Detail Detail { get; private set; }
 
-        public Car(string brokenPart)
+        public Car(Detail detail)
         {
-            BrokenPart = brokenPart;
+            Detail = detail;
+        }
+
+        public void RepairDetail()
+        {
+            Detail.Repair();
         }
     }
 }
